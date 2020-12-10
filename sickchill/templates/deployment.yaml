@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sickchill.fullname" . }}
+  labels:
+    {{- include "sickchill.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "sickchill.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "sickchill.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "sickchill.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8081
+              protocol: TCP
+          env:
+          - name: TZ
+            value: "{{ .Values.tz }}"
+          - name: PUID
+            value: "{{ .Values.uid }}"
+          - name: GUID
+            value: "{{ .Values.gid }}"
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          {{- if .Values.persistence.config.subPath }}
+            subPath: {{ .Values.persistence.config.subPath }}
+          {{ end }}
+          {{- if .Values.persistence.download.enabled }}
+          - name: download
+            mountPath: /download
+          {{- if .Values.persistence.download.subPath }}
+            subPath: {{ .Values.persistence.download.subPath }}
+          {{ end }}
+          {{ end }}
+          {{- if .Values.persistence.tv.enabled }}
+          - name: tv
+            mountPath: /tv
+          {{- if .Values.persistence.tv.subPath }}
+            subPath: {{ .Values.persistence.tv.subPath }}
+          {{ end }}
+          {{ end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+{{- if .Values.persistence.config.claimName }}
+          claimName: "{{ .Values.persistence.config.claimName }}"
+{{- else }}
+          claimName: "{{ template "sickchill.fullname" . }}-config"
+{{- end }}
+{{- if .Values.persistence.download.enabled }}
+      - name: download
+        persistentVolumeClaim:
+  {{- if .Values.persistence.download.claimName }}
+          claimName: "{{ .Values.persistence.download.claimName }}"
+  {{- else }}
+          claimName: "{{ template "sickchill.fullname" . }}-download"
+  {{- end }}
+{{- end }}
+{{- if .Values.persistence.tv.enabled }}
+      - name: tv
+        persistentVolumeClaim:
+  {{- if .Values.persistence.tv.claimName }}
+          claimName: "{{ .Values.persistence.tv.claimName }}"
+  {{- else }}
+          claimName: "{{ template "sickchill.fullname" . }}-tv"
+  {{- end }}
+{{- end }}

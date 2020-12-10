@@ -1,0 +1,57 @@
+{{- if .Values.persistence.config.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "sickchill.fullname" . }}-config
+  labels:
+    {{- include "sickchill.labels" . | nindent 4 }}
+    component: config
+spec:
+  accessModes:
+  - {{ .Values.persistence.config.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.config.size | quote }}
+{{- if .Values.persistence.config.storageClass }}
+  storageClassName: {{ .Values.persistence.config.storageClass | quote }}
+{{- end }}
+---
+{{- end }}
+{{- if .Values.persistence.download.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "sickchill.fullname" . }}-download
+  labels:
+    {{- include "sickchill.labels" . | nindent 4 }}
+    component: download
+spec:
+  accessModes:
+  - {{ .Values.persistence.download.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.download.size | quote }}
+{{- if .Values.persistence.download.storageClass }}
+  storageClassName: {{ .Values.persistence.download.storageClass | quote }}
+{{- end }}
+---
+{{- end }}
+{{- if .Values.persistence.tv.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "sickchill.fullname" . }}-tv
+  labels:
+    {{- include "sickchill.labels" . | nindent 4 }}
+    component: tv
+spec:
+  accessModes:
+  - {{ .Values.persistence.tv.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.tv.size | quote }}
+{{- if .Values.persistence.tv.storageClass }}
+  storageClassName: {{ .Values.persistence.tv.storageClass | quote }}
+{{- end }}
+---
+{{- end }}

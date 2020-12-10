@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fast-pv-1
+  labels:
+    name: {{ include "sickchill.fullname" . }}-config
+  annotations:
+    pv.beta.kubernetes.io/gid: "1001"
+spec:
+  storageClassName: config
+  capacity:
+    storage: 20G     
+  accessModes:
+  - ReadWriteOnce    
+  glusterfs:         
+    endpoints: gluster-cluster 
+    path: fast
+    readOnly: false
+  persistentVolumeReclaimPolicy: Retain 
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: slow-pv-1
+  labels:
+    name: {{ include "sickchill.fullname" . }}-download
+  annotations:
+    pv.beta.kubernetes.io/gid: "1001"
+spec:
+  storageClassName: download
+  capacity:
+    storage: 50G
+  accessModes:
+  - ReadWriteOnce    
+  glusterfs:         
+    endpoints: gluster-cluster 
+    path: slow
+    readOnly: false
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: slow-pv-2
+  labels:
+    name: {{ include "sickchill.fullname" . }}-tv
+  annotations:
+    pv.beta.kubernetes.io/gid: "1001"
+spec:
+  storageClassName: tv
+  capacity:
+    storage: 50G
+  accessModes:
+  - ReadWriteOnce    
+  glusterfs:         
+    endpoints: gluster-cluster 
+    path: slow
+    readOnly: false
+  persistentVolumeReclaimPolicy: Retain
+     
