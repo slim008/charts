@@ -36,22 +36,22 @@ spec:
 {{- end }}
 ---
 {{- end }}
-{{- if .Values.persistence.tv.enabled }}
+{{- if .Values.persistence.processed.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "sickchill.fullname" . }}-tv
+  name: {{ template "sickchill.fullname" . }}-processed
   labels:
     {{- include "sickchill.labels" . | nindent 4 }}
-    component: tv
+    component: processed
 spec:
   accessModes:
-  - {{ .Values.persistence.tv.accessMode | quote }}
+  - {{ .Values.persistence.processed.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.tv.size | quote }}
-{{- if .Values.persistence.tv.storageClass }}
-  storageClassName: {{ .Values.persistence.tv.storageClass | quote }}
+      storage: {{ .Values.persistence.processed.size | quote }}
+{{- if .Values.persistence.processed.storageClass }}
+  storageClassName: {{ .Values.persistence.processed.storageClass | quote }}
 {{- end }}
 ---
 {{- end }}

@@ -20,17 +20,8 @@ spec:
       labels:
         {{- include "sickchill.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "sickchill.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -57,21 +48,21 @@ spec:
             subPath: {{ .Values.persistence.download.subPath }}
           {{ end }}
           {{ end }}
-          {{- if .Values.persistence.tv.enabled }}
+          {{- if .Values.persistence.processed.enabled }}
           - name: tv
             mountPath: /tv
-          {{- if .Values.persistence.tv.subPath }}
-            subPath: {{ .Values.persistence.tv.subPath }}
+          {{- if .Values.persistence.processed.subPath }}
+            subPath: {{ .Values.persistence.processed.subPath }}
           {{ end }}
           {{ end }}
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: 8081
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 8081
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -103,12 +94,12 @@ spec:
           claimName: "{{ template "sickchill.fullname" . }}-download"
   {{- end }}
 {{- end }}
-{{- if .Values.persistence.tv.enabled }}
+{{- if .Values.persistence.processed.enabled }}
       - name: tv
         persistentVolumeClaim:
-  {{- if .Values.persistence.tv.claimName }}
-          claimName: "{{ .Values.persistence.tv.claimName }}"
+  {{- if .Values.persistence.processed.claimName }}
+          claimName: "{{ .Values.persistence.processed.claimName }}"
   {{- else }}
-          claimName: "{{ template "sickchill.fullname" . }}-tv"
+          claimName: "{{ template "sickchill.fullname" . }}-processed"
   {{- end }}
 {{- end }}
