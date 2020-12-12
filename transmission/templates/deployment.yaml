@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "transmission.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "transmission.selectorLabels" . | nindent 6 }}
@@ -48,7 +46,7 @@ spec:
             subPath: {{ .Values.persistence.download.subPath }}
           {{ end }}
           {{ end }}
-          {{- if .Values.persistence.processed.enabled }}
+          {{- if .Values.persistence.watch.enabled }}
           - name: watch
             mountPath: /watch
           {{- if .Values.persistence.watch.subPath }}
@@ -83,7 +81,7 @@ spec:
 {{- if .Values.persistence.config.claimName }}
           claimName: "{{ .Values.persistence.config.claimName }}"
 {{- else }}
-          claimName: "{{ template "sickchill.fullname" . }}-config"
+          claimName: "{{ template "transmission.fullname" . }}-config"
 {{- end }}
 {{- if .Values.persistence.download.enabled }}
       - name: download
@@ -91,7 +89,7 @@ spec:
   {{- if .Values.persistence.download.claimName }}
           claimName: "{{ .Values.persistence.download.claimName }}"
   {{- else }}
-          claimName: "{{ template "sickchill.fullname" . }}-download"
+          claimName: "{{ template "transmission.fullname" . }}-download"
   {{- end }}
 {{- end }}
 {{- if .Values.persistence.watch.enabled }}
@@ -100,6 +98,6 @@ spec:
   {{- if .Values.persistence.watch.claimName }}
           claimName: "{{ .Values.persistence.watch.claimName }}"
   {{- else }}
-          claimName: "{{ template "sickchill.fullname" . }}-watch"
+          claimName: "{{ template "transmission.fullname" . }}-watch"
   {{- end }}
 {{- end }}

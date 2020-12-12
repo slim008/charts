@@ -36,22 +36,22 @@ spec:
 {{- end }}
 ---
 {{- end }}
-{{- if .Values.persistence.processed.enabled }}
+{{- if .Values.persistence.watch.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "transmission.fullname" . }}-watch
   labels:
     {{- include "transmission.labels" . | nindent 4 }}
-    component: processed
+    component: watch
 spec:
   accessModes:
-  - {{ .Values.persistence.processed.accessMode | quote }}
+  - {{ .Values.persistence.watch.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.processed.size | quote }}
-{{- if .Values.persistence.processed.storageClass }}
-  storageClassName: {{ .Values.persistence.processed.storageClass | quote }}
+      storage: {{ .Values.persistence.watch.size | quote }}
+{{- if .Values.persistence.watch.storageClass }}
+  storageClassName: {{ .Values.persistence.watch.storageClass | quote }}
 {{- end }}
 ---
 {{- end }}

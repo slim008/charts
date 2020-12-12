@@ -49,7 +49,7 @@ metadata:
   annotations:
     pv.beta.kubernetes.io/gid: "1001"
 spec:
-  storageClassName: {{ .Values.persistence.processed.storageClass | quote }}
+  storageClassName: {{ .Values.persistence.watch.storageClass | quote }}
   capacity:
     storage: 10G
   accessModes:
