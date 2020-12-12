@@ -1,14 +1,14 @@
-# Default values for sickchill.
+# Default values for transmission.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: linuxserver/sickchill
+  repository: linuxserver/transmission
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2020.11.24.post1-ls48"
+  tag: "3.00-r0-ls69"
 
 nameOverride: ""
 fullnameOverride: ""
@@ -24,25 +24,25 @@ persistence:
     claimName: ''
     accessMode: ReadWriteOnce
     subPath: ''
-    size: 20G
+    size: 10G
   download:
     enabled: false
-    storageClass: downloads
+    storageClass: download
     claimName: ''
     accessMode: ReadWriteOnce
     subPath: ''
-    size: 50G
-  processed:
+    size: 100G
+  watch:
     enabled: false
-    storageClass: processed
+    storageClass: watch
     claimName: ''
     accessMode: ReadWriteOnce
     subPath: ''
-    size: 50G
+    size: 10G
 
 service:
   type: ClusterIP
-  port: 8081
+  port: 9091
 
 ingress:
   enabled: false

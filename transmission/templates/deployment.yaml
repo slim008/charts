@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "transmission.fullname" . }}
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "transmission.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "transmission.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+          - name: TZ
+            value: "{{ .Values.tz }}"
+          - name: PUID
+            value: "{{ .Values.uid }}"
+          - name: GUID
+            value: "{{ .Values.gid }}"
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          {{- if .Values.persistence.config.subPath }}
+            subPath: {{ .Values.persistence.config.subPath }}
+          {{ end }}
+          {{- if .Values.persistence.download.enabled }}
+          - name: download
+            mountPath: /download
+          {{- if .Values.persistence.download.subPath }}
+            subPath: {{ .Values.persistence.download.subPath }}
+          {{ end }}
+          {{ end }}
+          {{- if .Values.persistence.processed.enabled }}
+          - name: watch
+            mountPath: /watch
+          {{- if .Values.persistence.watch.subPath }}
+            subPath: {{ .Values.persistence.watch.subPath }}
+          {{ end }}
+          {{ end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+{{- if .Values.persistence.config.claimName }}
+          claimName: "{{ .Values.persistence.config.claimName }}"
+{{- else }}
+          claimName: "{{ template "sickchill.fullname" . }}-config"
+{{- end }}
+{{- if .Values.persistence.download.enabled }}
+      - name: download
+        persistentVolumeClaim:
+  {{- if .Values.persistence.download.claimName }}
+          claimName: "{{ .Values.persistence.download.claimName }}"
+  {{- else }}
+          claimName: "{{ template "sickchill.fullname" . }}-download"
+  {{- end }}
+{{- end }}
+{{- if .Values.persistence.watch.enabled }}
+      - name: tv
+        persistentVolumeClaim:
+  {{- if .Values.persistence.watch.claimName }}
+          claimName: "{{ .Values.persistence.watch.claimName }}"
+  {{- else }}
+          claimName: "{{ template "sickchill.fullname" . }}-watch"
+  {{- end }}
+{{- end }}

@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fast-{{ include "transmission.fullname" . }}-1
+  labels:
+    name: {{ include "transmission.fullname" . }}-config
+  annotations:
+    pv.beta.kubernetes.io/gid: "1001"
+spec:
+  storageClassName: {{ .Values.persistence.config.storageClass | quote }}
+  capacity:
+    storage: 10G     
+  accessModes:
+  - ReadWriteOnce    
+  glusterfs:         
+    endpoints: gluster-cluster 
+    path: fast
+    readOnly: false
+  persistentVolumeReclaimPolicy: Retain 
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: slow-{{ include "transmission.fullname" . }}-1
+  labels:
+    name: {{ include "transmission.fullname" . }}-download
+  annotations:
+    pv.beta.kubernetes.io/gid: "1001"
+spec:
+  storageClassName: {{ .Values.persistence.download.storageClass | quote }}
+  capacity:
+    storage: 100G
+  accessModes:
+  - ReadWriteOnce    
+  glusterfs:         
+    endpoints: gluster-cluster 
+    path: slow
+    readOnly: false
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: slow-{{ include "transmission.fullname" . }}-2
+  labels:
+    name: {{ include "transmission.fullname" . }}-watch
+  annotations:
+    pv.beta.kubernetes.io/gid: "1001"
+spec:
+  storageClassName: {{ .Values.persistence.processed.storageClass | quote }}
+  capacity:
+    storage: 10G
+  accessModes:
+  - ReadWriteOnce    
+  glusterfs:         
+    endpoints: gluster-cluster 
+    path: slow
+    readOnly: false
+  persistentVolumeReclaimPolicy: Retain
+     

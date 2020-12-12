@@ -1,0 +1,57 @@
+{{- if .Values.persistence.config.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "transmission.fullname" . }}-config
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+    component: config
+spec:
+  accessModes:
+  - {{ .Values.persistence.config.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.config.size | quote }}
+{{- if .Values.persistence.config.storageClass }}
+  storageClassName: {{ .Values.persistence.config.storageClass | quote }}
+{{- end }}
+---
+{{- end }}
+{{- if .Values.persistence.download.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "transmission.fullname" . }}-download
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+    component: download
+spec:
+  accessModes:
+  - {{ .Values.persistence.download.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.download.size | quote }}
+{{- if .Values.persistence.download.storageClass }}
+  storageClassName: {{ .Values.persistence.download.storageClass | quote }}
+{{- end }}
+---
+{{- end }}
+{{- if .Values.persistence.processed.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "transmission.fullname" . }}-watch
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+    component: processed
+spec:
+  accessModes:
+  - {{ .Values.persistence.processed.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.processed.size | quote }}
+{{- if .Values.persistence.processed.storageClass }}
+  storageClassName: {{ .Values.persistence.processed.storageClass | quote }}
+{{- end }}
+---
+{{- end }}
