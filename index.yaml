@@ -1,14 +1,25 @@
 apiVersion: v1
 entries:
-  test:
+  sickchill:
   - apiVersion: v2
-    appVersion: 1.16.0
-    created: "2020-12-09T12:54:29.664789+11:00"
+    appVersion: 2020.11.24.post1-ls48
+    created: "2020-12-13T09:42:23.717068+11:00"
     description: A Helm chart for Kubernetes
-    digest: 724d3fc72f71d0fbdf3b66d2356432d8068dcf38532e49d5cc46652803c831c1
-    name: test
+    digest: 6cba59731deb9f0264a7db7af3ea9caee8fbd594ab240c8e4662160d5794b1f4
+    name: sickchill
     type: application
     urls:
-    - https://github.com/slim008/charts/test-0.1.0.tgz
-    version: 0.1.0
-generated: "2020-12-09T12:54:29.664142+11:00"
+    - https://slim008.github.io/charts/sickchill-1.0.0.tgz
+    version: 1.0.0
+  transmission:
+  - apiVersion: v2
+    appVersion: 3.00-r0-ls69
+    created: "2020-12-13T09:42:23.71759+11:00"
+    description: A Helm chart for Kubernetes
+    digest: ed54c3a2b4c41bc479fbc3b04100e41978d0f1024d8394028aa447d6ba73d8ea
+    name: transmission
+    type: application
+    urls:
+    - https://slim008.github.io/charts/transmission-1.0.0.tgz
+    version: 1.0.0
+generated: "2020-12-13T09:42:23.716377+11:00"
