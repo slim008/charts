@@ -33,6 +33,8 @@ spec:
             value: "{{ .Values.uid }}"
           - name: GUID
             value: "{{ .Values.gid }}"
+          - name: TRANSMISSION_WEB_HOME
+            value: "{{ .Values.webHome }}"
           volumeMounts:
           - name: config
             mountPath: /config
