@@ -95,7 +95,7 @@ spec:
   {{- end }}
 {{- end }}
 {{- if .Values.persistence.watch.enabled }}
-      - name: tv
+      - name: watch
         persistentVolumeClaim:
   {{- if .Values.persistence.watch.claimName }}
           claimName: "{{ .Values.persistence.watch.claimName }}"
