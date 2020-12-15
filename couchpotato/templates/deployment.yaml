@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "couchpotato.fullname" . }}
+  labels:
+    {{- include "couchpotato.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "couchpotato.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "couchpotato.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+          - name: TZ
+            value: "{{ .Values.tz }}"
+          - name: PUID
+            value: "{{ .Values.uid }}"
+          - name: GUID
+            value: "{{ .Values.gid }}"
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          {{- if .Values.persistence.config.subPath }}
+            subPath: {{ .Values.persistence.config.subPath }}
+          {{ end }}
+          {{- if .Values.persistence.downloads.enabled }}
+          - name: downloads
+            mountPath: /downloads
+          {{- if .Values.persistence.downloads.subPath }}
+            subPath: {{ .Values.persistence.downloads.subPath }}
+          {{ end }}
+          {{ end }}
+          {{- if .Values.persistence.processed.enabled }}
+          - name: movies
+            mountPath: /movies
+          {{- if .Values.persistence.processed.subPath }}
+            subPath: {{ .Values.persistence.processed.subPath }}
+          {{ end }}
+          {{ end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+{{- if .Values.persistence.config.claimName }}
+          claimName: "{{ .Values.persistence.config.claimName }}"
+{{- else }}
+          claimName: "{{ template "couchpotato.fullname" . }}-config"
+{{- end }}
+{{- if .Values.persistence.downloads.enabled }}
+      - name: downloads
+        persistentVolumeClaim:
+  {{- if .Values.persistence.downloads.claimName }}
+          claimName: "{{ .Values.persistence.downloads.claimName }}"
+  {{- else }}
+          claimName: "{{ template "couchpotato.fullname" . }}-downloads"
+  {{- end }}
+{{- end }}
+{{- if .Values.persistence.processed.enabled }}
+      - name: movies
+        persistentVolumeClaim:
+  {{- if .Values.persistence.processed.claimName }}
+          claimName: "{{ .Values.persistence.processed.claimName }}"
+  {{- else }}
+          claimName: "{{ template "couchpotato.fullname" . }}-processed"
+  {{- end }}
+{{- end }}
