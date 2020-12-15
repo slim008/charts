@@ -59,10 +59,20 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.service.port }}
+{{- if .Values.probes.authentication.enabled }}
+              httpHeaders:
+                - name: Authorization
+                  value: "{{ .Values.probes.authentication.basic }}"
+{{- end }}
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.port }}
+{{- if .Values.probes.authentication.enabled }}
+              httpHeaders:
+                - name: Authorization
+                  value: "{{ .Values.probes.authentication.basic }}"
+{{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
