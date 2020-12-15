@@ -32,7 +32,7 @@ spec:
     requests:
       storage: {{ .Values.persistence.downloads.size | quote }}
 {{- if .Values.persistence.downloads.storageClass }}
-  storageClassName: {{ .Values.persistence.download.storageClass | quote }}
+  storageClassName: {{ .Values.persistence.downloads.storageClass | quote }}
 {{- end }}
 ---
 {{- end }}
