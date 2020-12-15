@@ -41,7 +41,7 @@ spec:
           {{- if .Values.persistence.config.subPath }}
             subPath: {{ .Values.persistence.config.subPath }}
           {{ end }}
-          {{- if .Values.persistence.download.enabled }}
+          {{- if .Values.persistence.downloads.enabled }}
           - name: downloads
             mountPath: /downloads
           {{- if .Values.persistence.downloads.subPath }}
