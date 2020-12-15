@@ -24,11 +24,11 @@ kind: PersistentVolume
 metadata:
   name: slow-{{ include "sickchill.fullname" . }}-1
   labels:
-    name: {{ include "sickchill.fullname" . }}-download
+    name: {{ include "sickchill.fullname" . }}-downloads
   annotations:
     pv.beta.kubernetes.io/gid: "1001"
 spec:
-  storageClassName: {{ .Values.persistence.download.storageClass | quote }}
+  storageClassName: {{ .Values.persistence.downloads.storageClass | quote }}
   capacity:
     storage: 50G
   accessModes:

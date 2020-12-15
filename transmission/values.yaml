@@ -26,9 +26,9 @@ persistence:
     accessMode: ReadWriteOnce
     subPath: ''
     size: 10G
-  download:
+  downloads:
     enabled: false
-    storageClass: download
+    storageClass: downloads
     claimName: ''
     accessMode: ReadWriteOnce
     subPath: ''

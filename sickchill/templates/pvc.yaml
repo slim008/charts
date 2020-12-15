@@ -17,21 +17,21 @@ spec:
 {{- end }}
 ---
 {{- end }}
-{{- if .Values.persistence.download.enabled }}
+{{- if .Values.persistence.downloads.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "sickchill.fullname" . }}-download
+  name: {{ template "sickchill.fullname" . }}-downloads
   labels:
     {{- include "sickchill.labels" . | nindent 4 }}
-    component: download
+    component: downloads
 spec:
   accessModes:
-  - {{ .Values.persistence.download.accessMode | quote }}
+  - {{ .Values.persistence.downloads.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.download.size | quote }}
-{{- if .Values.persistence.download.storageClass }}
+      storage: {{ .Values.persistence.downloads.size | quote }}
+{{- if .Values.persistence.downloads.storageClass }}
   storageClassName: {{ .Values.persistence.download.storageClass | quote }}
 {{- end }}
 ---

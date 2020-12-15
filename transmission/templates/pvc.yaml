@@ -17,22 +17,22 @@ spec:
 {{- end }}
 ---
 {{- end }}
-{{- if .Values.persistence.download.enabled }}
+{{- if .Values.persistence.downloads.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "transmission.fullname" . }}-download
+  name: {{ template "transmission.fullname" . }}-downloads
   labels:
     {{- include "transmission.labels" . | nindent 4 }}
-    component: download
+    component: downloads
 spec:
   accessModes:
-  - {{ .Values.persistence.download.accessMode | quote }}
+  - {{ .Values.persistence.downloads.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.download.size | quote }}
-{{- if .Values.persistence.download.storageClass }}
-  storageClassName: {{ .Values.persistence.download.storageClass | quote }}
+      storage: {{ .Values.persistence.downloads.size | quote }}
+{{- if .Values.persistence.downloads.storageClass }}
+  storageClassName: {{ .Values.persistence.downloads.storageClass | quote }}
 {{- end }}
 ---
 {{- end }}

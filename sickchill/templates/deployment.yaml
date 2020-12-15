@@ -39,11 +39,11 @@ spec:
           {{- if .Values.persistence.config.subPath }}
             subPath: {{ .Values.persistence.config.subPath }}
           {{ end }}
-          {{- if .Values.persistence.download.enabled }}
-          - name: download
-            mountPath: /download
-          {{- if .Values.persistence.download.subPath }}
-            subPath: {{ .Values.persistence.download.subPath }}
+          {{- if .Values.persistence.downloads.enabled }}
+          - name: downloads
+            mountPath: /downloads
+          {{- if .Values.persistence.downloads.subPath }}
+            subPath: {{ .Values.persistence.downloads.subPath }}
           {{ end }}
           {{ end }}
           {{- if .Values.persistence.processed.enabled }}
@@ -83,13 +83,13 @@ spec:
 {{- else }}
           claimName: "{{ template "sickchill.fullname" . }}-config"
 {{- end }}
-{{- if .Values.persistence.download.enabled }}
-      - name: download
+{{- if .Values.persistence.downloads.enabled }}
+      - name: downloads
         persistentVolumeClaim:
-  {{- if .Values.persistence.download.claimName }}
-          claimName: "{{ .Values.persistence.download.claimName }}"
+  {{- if .Values.persistence.downloads.claimName }}
+          claimName: "{{ .Values.persistence.downloads.claimName }}"
   {{- else }}
-          claimName: "{{ template "sickchill.fullname" . }}-download"
+          claimName: "{{ template "sickchill.fullname" . }}-downloads"
   {{- end }}
 {{- end }}
 {{- if .Values.persistence.processed.enabled }}

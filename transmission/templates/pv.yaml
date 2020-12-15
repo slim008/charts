@@ -24,11 +24,11 @@ kind: PersistentVolume
 metadata:
   name: slow-{{ include "transmission.fullname" . }}-1
   labels:
-    name: {{ include "transmission.fullname" . }}-download
+    name: {{ include "transmission.fullname" . }}-downloads
   annotations:
     pv.beta.kubernetes.io/gid: "1001"
 spec:
-  storageClassName: {{ .Values.persistence.download.storageClass | quote }}
+  storageClassName: {{ .Values.persistence.downloads.storageClass | quote }}
   capacity:
     storage: 100G
   accessModes:
